@@ -251,6 +251,11 @@ func (n *nomadFSM) Apply(log *raft.Log) interface{} {
 		return n.applySchedulerConfigUpdate(buf[1:], log.Index)
 	case structs.NodeBatchDeregisterRequestType:
 		return n.applyDeregisterNodeBatch(buf[1:], log.Index)
+
+	case structs.CSIVolumeRegisterRequestType:
+		return n.applyCSIVolumeRegister(buf[1:], log.Index)
+	case structs.CSIVolumeDeregisterRequestType:
+		return n.applyCSIVolumeDeregister(buf[1:], log.Index)
 	}
 
 	// Check enterprise only message types.
@@ -1054,6 +1059,14 @@ func (n *nomadFSM) applySchedulerConfigUpdate(buf []byte, index uint64) interfac
 		return applied
 	}
 	return n.state.SchedulerSetConfig(index, &req.Config)
+}
+
+func (n *nomadFSM) applyCSIVolumeRegister(buf []byte, index uint64) interface{} {
+	var req structs.CSIVolumeRegisterRequest
+
+}
+
+func (n *nomadFSM) applyCSIVolumeDeregister(buf []byte, index uint64) interface{} {
 }
 
 func (n *nomadFSM) Snapshot() (raft.FSMSnapshot, error) {
